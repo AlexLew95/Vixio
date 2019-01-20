@@ -105,14 +105,31 @@ pre {
 			<input class="input has-text-centered search-input" onkeypress="search()" type="text" placeholder="Find a syntax">
 			<br><br><a href="#example_ask" class="button">Ask to add an example</a>
 		</div>
-		<div class="syntaxes top">
+		<div class="columns">
+			<div class="column is-2">
+				<aside class="menu">
+					<p class="menu-label">Search in</p>
+					<ul class="menu-list">
+						<li><a href="#events">Events</a></li>
+						<li><a href="#conditions">Conditions</a></li>
+						<li><a href="#effects">Effects</a></li>
+						<li><a href="#expressions">Expressions</a></li>
+					</ul>
+				</aside>
+			</div>
+			<div class="column is-10">
+				<div class="syntaxes top">
 
-			<div class="events"><a href="#events" class="title">Events</a></div><br>
-			<div class="conditions"><a href="#conditions" class="title">Conditions</a></div><br>
-			<div class="effects"><a href="#effects" class="title">Effects</a></div><br>
-			<div class="expressions"><a href="#expressions" class="title">Expressions</a></div><br>
+					<div class="events" id="events"><a href="#events" class="title">Events</a></div><br>
+					<div class="conditions" id="conditions"><a href="#conditions" class="title">Conditions</a></div><br>
+					<div class="effects" id="effects"><a href="#effects" class="title">Effects</a></div><br>
+					<div class="expressions" id="expressions"><a href="#expressions" class="title">Expressions</a></div><br>
 
-		</div><br><br>
+				</div>
+			</div>
+		</div>
+	
+		<br><br>
 
 		<h1 class="subtitle has-text-centered" id="example_ask">Create your own Vixio example and ask to add it!</h1>
 		<div class="columns">
