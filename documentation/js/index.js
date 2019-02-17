@@ -71,6 +71,16 @@ async function start() {
 		
 	}
 
+
+	let match = window.location.href.match(/(\#.+)$/gm)
+	if (match) {
+		let element = document.getElementById(match[0].replace(
+			/^\#/gm,
+			""
+		))
+		element.scrollIntoView();
+	}
+
 }
 
 function search() {
@@ -97,7 +107,6 @@ function convert() {
 }
 
 start()
-
 
 document.addEventListener('DOMContentLoaded', () => {
 
