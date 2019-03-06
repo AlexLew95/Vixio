@@ -21,10 +21,9 @@ async function start() {
 	maincard.card = await request("https://raw.githubusercontent.com/" + user + "/Vixio/master/documentation/card.html");
 	maincard.syntaxes = await request("https://raw.githubusercontent.com/" + user + "/Vixio/master/documentation/Syntaxes.txt");
 	if (maincard.card.includes("404") || maincard.syntaxes.includes("404")) return;
-	maincard.syntaxes.replace("<", "&lt;").replace(">", "&gt;")
 	const lines = maincard.syntaxes.split("\n")
-	maincard.type = lines[0].toLowerCase().replace(":", "");
-	maincard.id = lines[1].split("name: ")[1].toLowerCase().replace(" ", "_")
+	maincard.type = lines[0].toLowerCase().replace(/\:/gm, "")
+	maincard.id = lines[1].split("name: ")[1].toLowerCase().replace(/\s/gm, "_")
 	maincard.name = lines[2].split("name: ")[1]
 	maincard.description = lines[3].split("description: ")[1]
 	maincard.pattern = lines[4].split("pattern: ")[1]
@@ -35,17 +34,17 @@ async function start() {
 		line = lines[i]
 		if (line.includes("name: ")) {
 			card = maincard.card
-				.replace("%id%", maincard.id)
-				.replace("#%id%", "#" + maincard.id)
-				.replace("%name%", '<span class="tag is-large" style="background-color: rgb(97, 237, 120)">' + maincard.type + '</span><p class="card-header-title">' + maincard.name + '</p>')
-				.replace("%description%", maincard.description)
-				.replace("%patterns%", maincard.patterns.join("\n")
-					.replace(new RegExp("\\b(seen|from|of|in)\\b", "gm"), '<span style="color: rgb(69, 134, 239)">$&</span>')
-					.replace(new RegExp("\\b(bot|guild|user|member|role|channel|permission|emote|embed)(builder)?s?\\b", "gm"), '<span style="color: rgb(61, 226, 75)">$&</span>')
+				.replace(/%id%/gm, maincard.id)
+				.replace(/\#%id%/gm, "#" + maincard.id)
+				.replace(/%name%/gm, '<span class="tag is-large" style="background-color: rgb(97, 237, 120)">' + maincard.type + '</span><p class="card-header-title">' + maincard.name + '</p>')
+				.replace(/%description%/gm, maincard.description)
+				.replace(/%patterns%/gm, maincard.patterns.join("\n")
+					.replace(/\b(seen|from|of|in)\b/gm, '<span style="color: rgb(69, 134, 239)">$&</span>')
+					.replace(/\b(bot|guild|user|member|role|channel|permission|emote|embed)(builder)?s?\b/gm, '<span style="color: rgb(61, 226, 75)">$&</span>')
 				)
-				.replace("%example%", maincard.example)
+				.replace(/%example%/gm, maincard.example)
 			document.getElementsByClassName(maincard.type)[0].innerHTML += card;
-			maincard.id = line.split("name: ")[1].toLowerCase().replace(" ", "_");
+			maincard.id = line.split("name: ")[1].toLowerCase().replace(/\s/gm, "_");
 			maincard.name = line.split("name: ")[1];
 			maincard.is_pattern = false;
 		
@@ -62,7 +61,7 @@ async function start() {
 			|| line === "Expressions:"
 			|| line === "Events:"
 		) {
-			maincard.type = line.toLowerCase().replace(":", "");
+			maincard.type = line.toLowerCase().replace(/\:/gm, "");
 		}
 
 		if (maincard.is_pattern === true) {
@@ -71,6 +70,10 @@ async function start() {
 		
 	}
 
+	document.body.innerHTML = document.body.innerHTML.replace(/\[\<s\>\]/gm, "[&lt;s&gt;]")
+
+	document.getElementById("doc_loading").style.display = "none";
+	document.getElementById("doc_content").style.display = "block";
 
 	let match = window.location.href.match(/(\#.+)$/gm)
 	if (match) {
@@ -78,7 +81,7 @@ async function start() {
 			/^\#/gm,
 			""
 		))
-		element.scrollIntoView();
+		await element.scrollIntoView();
 	}
 
 }

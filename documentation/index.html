@@ -6,8 +6,9 @@
 		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 		<title>Vixio Documentation</title>
 		<link rel="shortcut icon" href="./images/logo.png" type="image/x-icon">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css"/>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css"/>
 		<link rel="stylesheet" href="./css/material.css">
+		<link rel="stylesheet" href="./css/style.css">
 		<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 		<script src="./js/index.js"></script>
 	</head>
@@ -57,7 +58,15 @@ pre {
 </style>
 
 <body>
-	<nav class="navbar" role="navigation" aria-label="main navigation">
+
+	<div class="center-all">
+		<div id="doc_loading">
+			<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+		</div>
+	</div>
+
+	<div id="doc_content" style="display: none;">
+		<nav class="navbar" role="navigation" aria-label="main navigation">
 		<div class="navbar-brand">
 	
 			<a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarHamburger">
@@ -159,6 +168,9 @@ pre {
 		
 
 	</div>
+	</div>
+
+	
 
 </body>
 </html>
