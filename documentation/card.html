@@ -1,6 +1,7 @@
 <div class="card top" id="%id%">
     <header class="card-header">
-        %name%
+        <span class="tag is-large" style="background-color: rgb(97, 237, 120)">%type%</span>
+        <p class="card-header-title">%name%</p>
         <a aria-label="more options" class="card-header-icon" href="#%id%">
             <span>Copy Link</span>
             <span class="icon"><i class="fas fa-hashtag"></i></i></span>
@@ -9,20 +10,15 @@
     <div class="card-content">
         <div class="content">
 
-            <label class="label">Description:</label>
-            <div class="content">
-                %description%
-            </div>
+        <label class="label">Description:</label>
+        <div class="content">%description%</div>
 
-            <label class="label">Patterns:</label>
-            <pre class="card-pattern">
-                %patterns%
-            </pre>
+        <label class="label">Patterns:</label>
+        <pre class="card-pattern">%patterns%</pre>
 
-            <label class="label">Example:</label>
-            <pre class="card-example">
-                %example%
-            </pre>
+        <label class="label">Example:</label>
+        <pre class="card-example">%example%</pre>
+
         </div>
     </div>
 </div>

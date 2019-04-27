@@ -1,9 +1,17 @@
-const user = "AlexLew95"
-const maincard = {}
-const syntaxes = ""
-const filter = {
-	names: document.getElementsByClassName("card-header-title"),
-	patterns: document.getElementsByClassName("card-pattern")
+const docHostName = 'AlexLew95';
+const Syntax = class Pattern {
+
+    id;
+    name;
+    description;
+    type;
+    patterns = [];
+    example;
+
+    constructor (name) {
+        this.name = name;
+    }
+
 }
 
 async function request(link) {
@@ -18,68 +26,98 @@ async function request(link) {
 }
 
 async function start() {
-	maincard.card = await request("https://raw.githubusercontent.com/" + user + "/Vixio/master/documentation/card.html");
-	maincard.syntaxes = await request("https://raw.githubusercontent.com/" + user + "/Vixio/master/documentation/Syntaxes.txt");
-	if (maincard.card.includes("404") || maincard.syntaxes.includes("404")) return;
-	const lines = maincard.syntaxes.split("\n")
-	maincard.type = lines[0].toLowerCase().replace(/\:/gm, "")
-	maincard.id = lines[1].split("name: ")[1].toLowerCase().replace(/\s/gm, "_")
-	maincard.name = lines[2].split("name: ")[1]
-	maincard.description = lines[3].split("description: ")[1]
-	maincard.pattern = lines[4].split("pattern: ")[1]
-	maincard.example = lines[5].split("example: ")[1]
-	maincard.patterns = []
-	maincard.is_pattern = false
-	for (i = 0; i < lines.length; i++) {
-		line = lines[i]
-		if (line.includes("name: ")) {
-			card = maincard.card
-				.replace(/%id%/gm, maincard.id)
-				.replace(/\#%id%/gm, "#" + maincard.id)
-				.replace(/%name%/gm, '<span class="tag is-large" style="background-color: rgb(97, 237, 120)">' + maincard.type + '</span><p class="card-header-title">' + maincard.name + '</p>')
-				.replace(/%description%/gm, maincard.description)
-				.replace(/%patterns%/gm, maincard.patterns.join("\n")
-					.replace(/\b(seen|from|of|in)\b/gm, '<span style="color: rgb(69, 134, 239)">$&</span>')
-					.replace(/\b(bot|guild|user|member|role|channel|permission|emote|embed)(builder)?s?\b/gm, '<span style="color: rgb(61, 226, 75)">$&</span>')
-				)
-				.replace(/%example%/gm, maincard.example)
-			document.getElementsByClassName(maincard.type)[0].innerHTML += card;
-			maincard.id = line.split("name: ")[1].toLowerCase().replace(/\s/gm, "_");
-			maincard.name = line.split("name: ")[1];
-			maincard.is_pattern = false;
-		
-		} else if (line.includes("description:")) {
-			maincard.description = line.split("description: ")[1];
-		} else if (line.includes("patterns:")) {
-			maincard.is_pattern = true;
-			maincard.patterns = [];
-		} else if (line.includes("example:")) {
-			maincard.example = line.split("example: ")[1];
-		} else if (
-			line === "Conditions:"
-			|| line === "Effects:" 
-			|| line === "Expressions:"
-			|| line === "Events:"
-		) {
-			maincard.type = line.toLowerCase().replace(/\:/gm, "");
-		}
 
-		if (maincard.is_pattern === true) {
-			maincard.patterns.push(line.split("- ")[1])
+	const match = window.location.href.match(/(\#.+)$/gm);
+	const defaultCard = await request('https://raw.githubusercontent.com/' + docHostName + '/Vixio/master/documentation/card.html');
+	let file = await request('https://raw.githubusercontent.com/' + docHostName + '/Vixio/master/documentation/Syntaxes.txt');
+
+	if (defaultCard.includes('404') || file.includes('404')) return;
+
+	file = file
+		.replace(/</gmui, '&lt;');
+
+	const lines = file.split('\n');
+	const syntax = new Syntax();
+	let card = defaultCard;
+
+	for (let line of lines) {
+		if (!line.match(/\t/gmui)) {
+			syntax.type = line
+				.toLowerCase()
+				.replace(/:/gmui, '');
+		} else if (line.match(/\tname:\s/gmui)) {
+			let register = true;
+			if (Object.values(syntax).includes(undefined)) {
+				register = false;
+			}
+			if (register) {
+				card = card
+					.replace(/%id%/gmui, syntax.id)
+					.replace(/%type%/gmui, syntax.type)
+					.replace(/%name%/gmui, syntax.name)
+					.replace(/%description%/gmui, syntax.description)
+					.replace(
+						/%patterns%/gmui,
+						syntax.patterns.join('\n')
+							.replace(/\b(seen|from|of|in|reply with|append|set|add|remove)\b/gmui, '<span style="color: rgb(69, 134, 239)">$&</span>')
+							.replace(/\b(bot|guild|user|member|role|channel|permission|emote|embed)(builder)?s?\b/gmui, '<span style="color: rgb(61, 226, 75)">$&</span>')
+					)
+					.replace(
+						/%example%/gmui,
+						syntax.example
+							.replace(/\b(seen|from|of|in|reply with|append|set|add|remove)\b/gmui, '<span style="color: rgb(69, 134, 239)">$&</span>')
+							.replace(/<?(bot|guild|user|member|role|channel|permission|emote|embed)(builder)?s?>?/gmui, '<span style="color: rgb(61, 226, 75)">$&</span>')
+							.replace(/(prefixes|aliases|roles|description|usage|bots|executable in|trigger):/gmui, '<span style="color: rgb(244, 182, 66)">$&</span>')
+							.replace(/(discord )?command/gmui, '<span style="color: rgb(244, 182, 66)">$&</span>')
+					)
+				
+				document.getElementsByClassName(syntax.type)[0].innerHTML += card;
+				syntax.patterns = [];
+				card = defaultCard;
+			}
+			syntax.name = line
+				.replace(/\tname:\s/gmui, '')
+			syntax.id = syntax.name
+				.toLowerCase()
+				.replace(/\s/gmui, '_');
+		} else if (line.match(/\tdescription:\s/gmui)) {
+			syntax.description = line
+				.replace(/\tdescription:(\s|\t)+/gmui, '')
+				.replace(/\\t/gmui, '\t')
+				.replace(/\\n/gmui, '\n');
+		} else if (line.match(/\texample:\s/gmui)) {
+			syntax.example = line
+				.split(',\\t')
+				.join('\n\t')
+				.replace(/\texample:(\s|\t)+/gmui, '')
+				.replace(/\\t/gmui, '\t')
+				.replace(/\\"/gmui, '"')
+		} else if (line.match(/\t+-\s/gmui)) {
+			syntax.patterns.push(
+				line
+					.replace(/\t+-(\s|\t)+/gmui, '')
+					.replace(/\\t/gmui, '\t')
+					.replace(/\\n/gmui, '\n')
+				);
 		}
-		
 	}
 
-	document.body.innerHTML = document.body.innerHTML.replace(/\[\<s\>\]/gm, "[&lt;s&gt;]")
+	for (let element of document.getElementsByClassName('card-pattern')) {
+		element.innerHTML = element.innerHTML.replace(/^\s+/gmui, '');
+	}
 
-	document.getElementById("doc_loading").style.display = "none";
-	document.getElementById("doc_content").style.display = "block";
+	for (let element of document.getElementsByClassName('card-example')) {
+		let lines = element.innerHTML.split('\n');
+		lines[0] = lines[0].replace(/^\s+/gmui, '');
+		element.innerHTML = lines.join('\n');
+	}
 
-	let match = window.location.href.match(/(\#.+)$/gm)
+	document.getElementById('doc_loading').style.display = 'none';
+	document.getElementById('doc_content').style.display = 'block';
 	if (match) {
 		let element = document.getElementById(match[0].replace(
 			/^\#/gm,
-			""
+			''
 		))
 		await element.scrollIntoView();
 	}
@@ -87,33 +125,33 @@ async function start() {
 }
 
 function search() {
-	cards = document.getElementsByClassName("syntaxes")[0].getElementsByClassName("card")
-	search_value = document.getElementsByClassName("search-input")[0].value.toLowerCase();
+	cards = document.getElementsByClassName('syntaxes')[0].getElementsByClassName('card')
+	search_value = document.getElementsByClassName('search-input')[0].value.toLowerCase();
 	for (i = 0; i < cards.length; i++) {
-		txtValue = cards[i].getElementsByClassName("card-header-title")[0].textContent;
-		pattern = cards[i].getElementsByClassName("card-pattern")[0];
+		txtValue = cards[i].getElementsByClassName('card-header-title')[0].textContent;
+		pattern = cards[i].getElementsByClassName('card-pattern')[0];
 		if (txtValue.toLowerCase().indexOf(search_value) > -1) {
-			cards[i].style.display = "";
+			cards[i].style.display = '';
 		} else {
-			cards[i].style.display = "none";
+			cards[i].style.display = 'none';
 		}
 	}
 }
 
 function convert() {
-	code = document.getElementsByClassName("code-converter")[0].value
-	if (code.replace(" ", "") === "") {
-		alert("You must to put a code!")
+	code = document.getElementsByClassName('code-converter')[0].value
+	if (code.replace(' ', '') === '') {
+		alert('You must to put a code!')
 		return;
 	}
-	document.getElementsByClassName("code-converter-output")[0].value = code.split("\n").join("\\n").replace("    ", "\\t")
+	document.getElementsByClassName('code-converter-output')[0].value = code.split('\n').join('\\n').replace('    ', '\\t')
 }
 
 start()
 
 document.addEventListener('DOMContentLoaded', () => {
 
-	// Get all "navbar-burger" elements
+	// Get all 'navbar-burger' elements
 	const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
   
 	// Check if there are any navbar burgers
@@ -123,11 +161,11 @@ document.addEventListener('DOMContentLoaded', () => {
 	  $navbarBurgers.forEach( el => {
 		el.addEventListener('click', () => {
   
-		  // Get the target from the "data-target" attribute
+		  // Get the target from the 'data-target' attribute
 		  const target = el.dataset.target;
 		  const $target = document.getElementById(target);
   
-		  // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+		  // Toggle the 'is-active' class on both the 'navbar-burger' and the 'navbar-menu'
 		  el.classList.toggle('is-active');
 		  $target.classList.toggle('is-active');
   
@@ -141,9 +179,9 @@ window.onscroll = function() {scrollFunction()};
 
 function scrollFunction() {
 	if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-		document.getElementById("topButton").style.display = "block";
+		document.getElementById('topButton').style.display = 'block';
 	} else {
-		document.getElementById("topButton").style.display = "none";
+		document.getElementById('topButton').style.display = 'none';
 	}
 }
 
