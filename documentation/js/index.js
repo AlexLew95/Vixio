@@ -103,7 +103,7 @@ function search() {
 function convert() {
 	code = document.getElementsByClassName("code-converter")[0].value
 	if (code.replace(" ", "") === "") {
-		alert("You must put a code!")
+		alert("You must to put a code!")
 		return;
 	}
 	document.getElementsByClassName("code-converter-output")[0].value = code.split("\n").join("\\n").replace("    ", "\\t")
