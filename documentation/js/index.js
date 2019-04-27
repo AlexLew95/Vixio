@@ -14,6 +14,10 @@ const Syntax = class Pattern {
 
 }
 
+function sleep(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 async function request(link) {
 	let back = await fetch(link)
 	.then(function(response) {
@@ -40,6 +44,9 @@ async function start() {
 	const syntax = new Syntax();
 	let card = defaultCard;
 
+	document.getElementsByClassName('ldBar')[0].setAttribute('data-max', file.match(/name:\s/gmui).length + 1);
+	const loadingBar = new ldBar('.ldBar');
+
 	for (let line of lines) {
 		if (!line.match(/\t/gmui)) {
 			syntax.type = line
@@ -65,15 +72,18 @@ async function start() {
 					.replace(
 						/%example%/gmui,
 						syntax.example
-							.replace(/\b(seen|from|of|in|reply with|append|set|add|remove)\b/gmui, '<span style="color: rgb(69, 134, 239)">$&</span>')
-							.replace(/<?(bot|guild|user|member|role|channel|permission|emote|embed)(builder)?s?>?/gmui, '<span style="color: rgb(61, 226, 75)">$&</span>')
-							.replace(/(prefixes|aliases|roles|description|usage|bots|executable in|trigger):/gmui, '<span style="color: rgb(244, 182, 66)">$&</span>')
+							.replace(/\t(prefixes|aliases|roles|description|usage|bots|executable in|trigger):/gmui, '<span style="color: rgb(244, 182, 66)">$&</span>')
+							.replace(/\s".+"/gmui, '<span style="color: rgb(194, 66, 244)">$&</span>')
 							.replace(/(discord )?command/gmui, '<span style="color: rgb(244, 182, 66)">$&</span>')
+							.replace(/\{@.+\}/gmui, '<span style="color: rgb(224, 38, 38)">$&</span>')
+							.replace(/\b(seen|from|in|reply with|append|set|add|remove)(?!:)\b/gmui, '<span style="color: rgb(69, 134, 239)">$&</span>')
 					)
 				
 				document.getElementsByClassName(syntax.type)[0].innerHTML += card;
+				loadingBar.set(loadingBar.value + 1);
 				syntax.patterns = [];
 				card = defaultCard;
+				await sleep(1);
 			}
 			syntax.name = line
 				.replace(/\tname:\s/gmui, '')
@@ -136,15 +146,6 @@ function search() {
 			cards[i].style.display = 'none';
 		}
 	}
-}
-
-function convert() {
-	code = document.getElementsByClassName('code-converter')[0].value
-	if (code.replace(' ', '') === '') {
-		alert('You must to put a code!')
-		return;
-	}
-	document.getElementsByClassName('code-converter-output')[0].value = code.split('\n').join('\\n').replace('    ', '\\t')
 }
 
 start()

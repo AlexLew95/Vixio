@@ -3,7 +3,7 @@
 }
 
 .big-top {
-	margin-top: 25%;
+	margin-top: 20%;
 }
 
 .center-all {
@@ -18,7 +18,6 @@ pre {
 	background-color: #39393a;
 	color: white;
 }
-
 #topButton {
 	display: none;
 	position: fixed;

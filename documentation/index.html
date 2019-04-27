@@ -9,8 +9,9 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
 		<link rel="stylesheet" href="./css/material.css">
 		<link rel="stylesheet" href="./css/style.css">
+		<link rel="stylesheet" href="./css/loading-bar.css">
 		<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-		<script src="./js/index.js"></script>
+		<script src="./js/loading-bar.js"></script>
 	</head>
 
 <body>
@@ -20,6 +21,15 @@
 			<div class="column">
 				<div id="doc_loading">
 					<h1 class="title animated bounce big-top">Welcome on the Vixio's documentation</h1>
+					<br><h1 class="subtitle animated bounce">Please wait all elements load...</h1>
+					<br><div
+						class="ldBar label-center"
+						style="width: 50%; height: 50% ; margin: auto"
+						data-value="1"
+						data-min="1"
+						data-max="191"
+						data-preset="energy"
+						></div>
 				</div>
 			</div>
 		</div>
@@ -101,7 +111,6 @@
 	</div>
 	</div>
 
-	
-
 </body>
+<script src="./js/index.js"></script>
 </html>
