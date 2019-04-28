@@ -29,7 +29,23 @@ async function request(link) {
 	return back;
 }
 
+function compatible() {
+    "use strict";
+
+    if (typeof Symbol == "undefined") return false;
+    try {
+        eval("class Foo {}");
+        eval("var bar = (x) => x+1");
+    } catch (e) { return false; }
+
+    return true;
+}
+
 async function start() {
+
+	if (!compatible()) {
+		document.getElementsByClassName('notCompatibleMessage')[0].style.display = 'block';
+	}
 
 	const match = window.location.href.match(/(\#.+)$/gm);
 	const defaultCard = await request('https://raw.githubusercontent.com/' + docHostName + '/Vixio/master/documentation/card.html');
