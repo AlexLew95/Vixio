@@ -1,18 +1,15 @@
-const docHostName = 'AlexLew95';
-const Syntax = class Pattern {
-
-    id;
-    name;
-    description;
-    type;
-    patterns = [];
-    example;
-
-    constructor (name) {
-        this.name = name;
-    }
-
+class Syntax {
+	constructor(name) {
+		this.id = '';
+		this.name = name;
+		this.description = '';
+		this.type = '';
+		this.patterns = [];
+		this.example = '';
+	}
 }
+
+const docHostName = 'AlexLew95';
 
 function sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
